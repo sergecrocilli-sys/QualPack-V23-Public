@@ -3000,18 +3000,20 @@ function genExcelPesee() {
   XLSXLib.utils.book_append_sheet(wb, wsControle, 'Controle_Pesee');
 
   const syntheseData = [[
-    'OF', 'Client', 'Produit', 'Opérateur', 'Date', 'Moyenne', 'Écart-type', 'TU1', 'TU2', 'Verdict'
-  ]];
-  syntheseData.push([
-    d.of, d.cli, d.prod.nom, d.op, d.now,
-    Number(r.moy.toFixed(2)), Number(r.et.toFixed(2)), r.tu1, r.tu2,
-    r.vF === 'ok' ? 'CONFORME' : r.vF === 'warn' ? 'A VERIFIER' : 'NON CONFORME'
-  ]);
+  'OF', 'Client', 'Produit', 'Opérateur', 'Date', 'Quantité prévue', 'Moyenne', 'Écart-type', 'TU1', 'TU2', 'Verdict'
+]];
+syntheseData.push([
+  d.of, d.cli, d.prod.nom, d.op, d.now,
+  d.qte ? d.qte + ' unités' : 'Non renseigné',
+  Number(r.moy.toFixed(2)), Number(r.et.toFixed(2)), r.tu1, r.tu2,
+  r.vF === 'ok' ? 'CONFORME' : r.vF === 'warn' ? 'A VERIFIER' : 'NON CONFORME'
+]);
   const wsSynthese = XLSXLib.utils.aoa_to_sheet(syntheseData);
-  wsSynthese['!cols'] = [
-    { wch: 14 }, { wch: 14 }, { wch: 18 }, { wch: 14 }, { wch: 20 },
-    { wch: 12 }, { wch: 12 }, { wch: 8 }, { wch: 8 }, { wch: 16 }
-  ];
+ wsSynthese['!cols'] = [
+  { wch: 14 }, { wch: 14 }, { wch: 18 }, { wch: 14 }, { wch: 20 },
+  { wch: 18 },
+  { wch: 12 }, { wch: 12 }, { wch: 8 }, { wch: 8 }, { wch: 16 }
+];
   XLSXLib.utils.book_append_sheet(wb, wsSynthese, 'Synthese');
 
   const wsDetecteur = XLSXLib.utils.aoa_to_sheet([
