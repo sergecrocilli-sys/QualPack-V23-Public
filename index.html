@@ -5142,30 +5142,52 @@ async function importProduitsExcel(input) {
     if (!normalized.length) { toast('Feuille IMPORT_APP introuvable ou vide', 'err'); return; }
 
     const first = normalized[0] || {};
-    const hasClient  = 'CLIENT'  in first;
-    const hasProduit = 'PRODUIT' in first;
-    const hasQN      = 'QN_G' in first || 'QN' in first;
-    if (!hasClient || !hasProduit || !hasQN) {
-      toast('Colonnes requises : CLIENT, PRODUIT, QN_G', 'err'); return;
-    }
+    const hasClient =
+  'CLIENT_FINAL' in first ||
+  'CLIENT' in first;
 
-    const preview = normalized.map(r => {
-  const tareFixeRaw = r.TARE_FIXE_G ?? r.TARE_FIXE ?? '';
-  const tareFixe =
-    tareFixeRaw === '' || tareFixeRaw == null
-      ? null
-      : Number(String(tareFixeRaw).replace(',', '.'));
+const hasProduit = 'PRODUIT' in first;
+const hasQN = 'QN_G' in first || 'QN' in first;
+
+if (!hasClient || !hasProduit || !hasQN) {
+  toast('Colonnes requises : CLIENT_FINAL, PRODUIT, QN_G', 'err');
+  return;
+}
+
+const preview = normalized.map(r => {
+  const parseNumber = (v) => {
+    if (v === '' || v == null) return null;
+    const n = Number(String(v).replace(',', '.'));
+    return Number.isFinite(n) ? n : null;
+  };
+
+  const parseIntOrNull = (v) => {
+    if (v === '' || v == null) return null;
+    const n = parseInt(String(v).replace(',', '.'), 10);
+    return Number.isFinite(n) ? n : null;
+  };
+
+  const actifRaw = String(r.ACTIF ?? 'OUI').trim().toUpperCase();
+  const actif = !['NON', 'NO', 'FALSE', '0', 'INACTIF'].includes(actifRaw);
+
+  const qn = parseNumber(r.QN_G ?? r.QN ?? '');
 
   return {
-    client:       String(r.CLIENT || '').trim(),
-    nom:          String(r.PRODUIT || '').trim(),
-    qn:           parseFloat(r.QN_G || r.QN || 0),
-    tare_fixe_g:  Number.isFinite(tareFixe) && tareFixe >= 0 ? tareFixe : null,
-    ligne_prod:   String(r.LIGNE_PROD || r.LIGNE || '').trim(),
-    detecteur:    String(r.DETECTEUR || r.EQUIPEMENT || '').trim(),
-    of_planifies: String(r.OF_PLANIFIES || r.OF || '').trim()
+    client: String(r.CLIENT_FINAL || r.CLIENT || '').trim(),
+    nom: String(r.PRODUIT || '').trim(),
+    qn: qn,
+    tare_fixe_g: parseNumber(r.TARE_FIXE_G ?? r.TARE_FIXE ?? r.TARE ?? ''),
+    ligne_prod: String(r.LIGNE_PROD_HABITUELLE || r.LIGNE_PROD || r.LIGNE || '').trim(),
+    detecteur: String(r.DETECTEUR_HABITUEL || r.DETECTEUR || r.EQUIPEMENT || '').trim(),
+    quantite_prevue_defaut: parseIntOrNull(
+      r.QUANTITE_PREVUE_PAR_DEFAUT ??
+      r.QUANTITE_PREVUE ??
+      r.QTE_PREVUE ??
+      ''
+    ),
+    actif
   };
-}).filter(r => r.client && r.nom && r.qn > 0);
+}).filter(r => r.actif && r.client && r.nom && r.qn > 0);
 
     const lignesRows = readSheet('LIGNES', 3);
     const explicitLines = lignesRows.map((r, idx) => ({
