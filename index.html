@@ -3444,6 +3444,7 @@ async function genExcel() {
       'Produit':        s?.prod || '',
       'Ligne':          s?.ligne_prod || s?.ligne || '',
       'Opérateur':      s?.op || '',
+      'Quantité prévue':  safeNumber(s?.qte),
       'Moyenne (g)':    safeNumber(s?.moy),
       'Écart-type (g)': safeNumber(s?.et),
       'Défauts TU1':    safeNumber(s?.tu1),
