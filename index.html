@@ -3088,7 +3088,7 @@ async function genPDF() {
     toast('Librairie PDF indisponible (mode hors-ligne ?)', 'err'); return;
   }
   const doc = new JsPDFCtor({ unit:'mm', format:'a4' });
-  const { r, cli, op, of, now, prod } = window._lastPesee;
+  const { r, cli, op, of, now, prod, qte } = window._lastPesee;
   const M = 18; let y = 0;
 
   /* En-tête */
