@@ -1759,7 +1759,7 @@ async function renderHist() {
           <div class="hist-item">
             <div>
               <div class="hi-title">${prod}  ·  ${of}</div>
-              <div class="hi-meta">${controlId}  ·  ${op}  ·  ${date}  ·  moy. ${moy} g</div>
+             <div class="hi-meta">${controlId}  ·  ${op}  ·  ${date}  ·  ${s.qte ? 'Qté prévue ' + s.qte + ' · ' : ''}moy. ${moy} g</div>
               <div class="sync-badge ${syncMeta.cls}">${syncMeta.label}</div>
             </div>
             <span class="badge ${vf}">${verdictLabel}</span>
