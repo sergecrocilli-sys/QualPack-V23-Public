@@ -5138,7 +5138,7 @@ async function importProduitsExcel(input) {
       });
     };
 
-    const normalized = readSheet('IMPORT_APP', 4);
+    const normalized = readSheet('IMPORT_APP');
     if (!normalized.length) { toast('Feuille IMPORT_APP introuvable ou vide', 'err'); return; }
 
     const first = normalized[0] || {};
