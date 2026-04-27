@@ -3527,16 +3527,26 @@ function setDashFilter(key, value) {
   renderDashboard();
 }
 
-function resetDashFilters() {
-  dashFilters = { client:'', product:'', status:'all' };
-  const c = document.getElementById('dash-filter-client');
-  const p = document.getElementById('dash-filter-product');
-  const s = document.getElementById('dash-filter-status');
-  if (c) c.value = '';
-  if (p) p.value = '';
-  if (s) s.value = 'all';
-  populateDashFilters();
-  renderDashboard();
+async function refreshDashboard() {
+  try {
+    toast('Actualisation du dashboard...', 'ok');
+
+    if (navigator.onLine && typeof syncPending === 'function') {
+      await syncPending(true);
+    }
+
+    if (typeof loadFromDB === 'function') {
+      await loadFromDB();
+    }
+
+    populateDashFilters();
+    renderDashboard();
+
+    toast('Dashboard actualisé ✓', 'ok');
+  } catch (e) {
+    console.error('refreshDashboard error:', e);
+    toast('Erreur actualisation dashboard', 'err');
+  }
 }
 
 function filterByPeriod(items, days) {
