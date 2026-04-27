@@ -4417,26 +4417,13 @@ async function genDashboardPDF() {
       drawSimpleTableTitle(y, title);
       y += 5;
 
-      const titleNorm = String(title || '').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
-      const isPeseesTable = titleNorm.includes('pesee') || titleNorm.includes('pesees');
-
-      const cols = isPeseesTable
-  ? [
-      { key: 'date', x: 14, w: 28, label: 'Date' },
-      { key: 'label', x: 42, w: 50, label: 'Produit' },
-      { key: 'of', x: 92, w: 24, label: 'N° OF' },
-      { key: 'line', x: 116, w: 22, label: 'Ligne' },
-      { key: 'qte', x: 138, w: 28, label: 'Qté prévue' },
-      { key: 'result', x: 166, w: 30, label: 'Résultat' }
-    ]
-  : [
-      { key: 'date', x: 14, w: 30, label: 'Date' },
-      { key: 'label', x: 44, w: 64, label: 'Équipement' },
-      { key: 'of', x: 126, w: 20, label: 'N° OF' },
-      { key: 'line', x: 146, w: 20, label: 'Ligne' },
-      { key: 'result', x: 166, w: 30, label: 'Résultat' }
-    ];
-
+     const cols = [
+  { key: 'date', x: 14, w: 30, label: 'Date' },
+  { key: 'label', x: 44, w: 64, label: 'Produit / Équipement' },
+  { key: 'of', x: 126, w: 20, label: 'N° OF' },
+  { key: 'line', x: 146, w: 20, label: 'Ligne' },
+  { key: 'result', x: 166, w: 30, label: 'Résultat' }
+];
       pdfCard(doc, 14, y, 182, 9, theme.bgSoft, theme.border, 2);
       doc.setFont('helvetica', 'bold');
       doc.setFontSize(8);
