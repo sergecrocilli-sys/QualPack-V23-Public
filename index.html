@@ -3108,52 +3108,65 @@ async function genPDF() {
   y = 32;
   doc.setTextColor(30, 30, 40);
 
-  /* Bloc identification */
-  doc.setFillColor(245, 247, 250);
-  doc.roundedRect(M, y, 174, 58, 3, 3, 'F');
-  doc.setDrawColor(200, 210, 225);
-  doc.roundedRect(M, y, 174, 58, 3, 3, 'S');
-  doc.setFont('helvetica', 'bold'); doc.setFontSize(8);
-  doc.setTextColor(74, 98, 120);
-  doc.text('IDENTIFICATION', M + 6, y + 7);
-  doc.setFont('helvetica', 'normal'); doc.setFontSize(9);
-  doc.setTextColor(30, 30, 40);
-  const balanceRef = (getBalanceRef() || '').trim() || 'Non renseigné';
-const id1 = [
-  ['Client', cli],
-  ['Produit', prod.nom],
+ /* Bloc identification */
+const qteText = qte ? qte + ' unités' : 'Non renseigné';
+const balanceRef = (getBalanceRef() || '').trim() || 'Non renseigné';
+
+doc.setFillColor(245, 247, 250);
+doc.roundedRect(M, y, 174, 66, 3, 3, 'F');
+doc.setDrawColor(200, 210, 225);
+doc.roundedRect(M, y, 174, 66, 3, 3, 'S');
+
+/* Titre */
+doc.setFont('helvetica', 'bold');
+doc.setFontSize(8);
+doc.setTextColor(74, 98, 120);
+doc.text('IDENTIFICATION', M + 6, y + 7);
+
+/* Colonne gauche */
+const idLeft = [
+  ['CLIENT', cli],
   ['N° OF', of],
-  ['Opérateur', op],
-  ['Quantité prévue', qte ? qte + ' unités' : 'Non renseignée']
+  ['BALANCE', balanceRef]
 ];
 
-id1.forEach(([k, v], i) => {
-  const col = i % 2;
-  const row = Math.floor(i / 2);
-  const x = M + 6 + col * 87;
-  const ly = y + 15 + row * 10;
+/* Colonne droite */
+const idRight = [
+  ['PRODUIT', prod.nom],
+  ['OPÉRATEUR', op],
+  ['QUANTITÉ PRÉVUE', qteText]
+];
 
+let yLeft = y + 18;
+let yRight = y + 18;
+
+idLeft.forEach(([label, value]) => {
   doc.setFont('helvetica', 'bold');
-  doc.setTextColor(122, 143, 166);
   doc.setFontSize(7);
-  doc.text(k.toUpperCase(), x, ly);
+  doc.setTextColor(122, 143, 166);
+  doc.text(label, M + 6, yLeft);
 
   doc.setFont('helvetica', 'normal');
-  doc.setTextColor(30, 30, 40);
   doc.setFontSize(10);
-  doc.text(String(v || '—'), x, ly + 5);
+  doc.setTextColor(30, 30, 40);
+  doc.text(String(value || 'Non renseigné'), M + 6, yLeft + 5);
+
+  yLeft += 14;
 });
 
-/* Balance */
-doc.setFont('helvetica', 'bold');
-doc.setTextColor(122, 143, 166);
-doc.setFontSize(7);
-doc.text('BALANCE', M + 6, y + 35);
+idRight.forEach(([label, value]) => {
+  doc.setFont('helvetica', 'bold');
+  doc.setFontSize(7);
+  doc.setTextColor(122, 143, 166);
+  doc.text(label, M + 92, yRight);
 
-doc.setFont('helvetica', 'normal');
-doc.setTextColor(30, 30, 40);
-doc.setFontSize(10);
-doc.text(balanceRef, M + 6, y + 40);
+  doc.setFont('helvetica', 'normal');
+  doc.setFontSize(10);
+  doc.setTextColor(30, 30, 40);
+  doc.text(String(value || 'Non renseigné'), M + 92, yRight + 5);
+
+  yRight += 14;
+});
 
 /* Mode de calcul */
 doc.setFont('helvetica', 'italic');
@@ -3162,13 +3175,11 @@ doc.setFontSize(8.2);
 doc.text(
   'Mode de calcul : poids brut saisi par l’opérateur, puis déduction automatique de la tare fixe pour calculer le poids net réglementaire.',
   M + 6,
-  y + 52,
-  { maxWidth: 178 }
+  y + 59,
+  { maxWidth: 160 }
 );
 
-y += 21;
-
-  y += 66;
+y += 74;
 
   /* Seuils produit */
 const seuils = [
