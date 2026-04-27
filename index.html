@@ -4346,14 +4346,15 @@ async function genDashboardPDF() {
     const safeText = (value) => String(value || '—');
     const split = (txt, w) => doc.splitTextToSize(safeText(txt), w);
 
-    const pRows = (Array.isArray(data.p) ? data.p : []).map(r => ({
-      date: r.date || '—',
-      label: r.prod || 'Produit',
-      of: r.of || '—',
-      line: r.ligne_prod || r.ligne || '—',
-      result: r.vF === 'ok' ? 'OK' : r.vF === 'warn' ? 'À SURVEILLER' : 'NON CONFORME',
-      ok: r.vF === 'ok'
-    }));
+   const pRows = (Array.isArray(data.p) ? data.p : []).map(r => ({
+  date: r.date || '—',
+  label: r.prod || 'Produit',
+  of: r.of || '—',
+  line: r.ligne_prod || r.ligne || '—',
+  qte: r.qte ? String(r.qte) : '—',
+  result: r.vF === 'ok' ? 'OK' : r.vF === 'warn' ? 'À SURVEILLER' : 'NON CONFORME',
+  ok: r.vF === 'ok'
+}));
 
     const dRows = (Array.isArray(data.d) ? data.d : []).map(r => ({
       date: r.date || r.now || '—',
