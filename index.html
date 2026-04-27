@@ -5830,6 +5830,36 @@ function getPDFV2Perimeter(data) {
   };
 }
 
+async function refreshDashboard() {
+  try {
+    toast('Actualisation du dashboard...', 'ok');
+
+    if (navigator.onLine && typeof syncPending === 'function') {
+      await syncPending(true);
+    }
+
+    if (typeof loadFromDB === 'function') {
+      await loadFromDB();
+    }
+
+    if (typeof populateDashFilters === 'function') {
+      populateDashFilters();
+    }
+
+    if (typeof renderDashboard === 'function') {
+      renderDashboard();
+    }
+
+    toast('Dashboard actualisé ✓', 'ok');
+  } catch (e) {
+    console.error('refreshDashboard error:', e);
+    toast('Erreur actualisation dashboard', 'err');
+  }
+}
+
+window.refreshDashboard = refreshDashboard;
+
+  
 </script>
 </body>
 </html>
