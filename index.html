@@ -5415,14 +5415,17 @@ async function confirmImportProduits() {
       }
 
       const payload = {
-        client_id,
-        nom: r.nom,
-        qn: r.qn,
-        tare_fixe_g: Number.isFinite(r.tare_fixe_g) ? r.tare_fixe_g : null,
-        ligne_prod: r.ligne_prod || null,
-        detecteur: r.detecteur || lineDetecteurMap[r.ligne_prod] || null,
-        of_planifies: r.of_planifies || null
-    };
+  client_id,
+  nom: r.nom,
+  qn: r.qn,
+  tare_fixe_g: Number.isFinite(r.tare_fixe_g) ? r.tare_fixe_g : null,
+  ligne_prod: r.ligne_prod || null,
+  detecteur: r.detecteur || lineDetecteurMap[r.ligne_prod] || null,
+  quantite_prevue_defaut: Number.isFinite(r.quantite_prevue_defaut)
+    ? r.quantite_prevue_defaut
+    : null,
+  actif: r.actif !== false
+};
 
       if (targetId) {
         let resPatch = await fetch(`${SB_URL}/rest/v1/produits?id=eq.${encodeURIComponent(targetId)}`, {
