@@ -3123,7 +3123,8 @@ const id1 = [
   ['Client', cli],
   ['Produit', prod.nom],
   ['N° OF', of],
-  ['Opérateur', op]
+  ['Opérateur', op],
+  ['Quantité prévue', qte ? qte + ' unités' : 'Non renseignée']
 ];
 
 id1.forEach(([k, v], i) => {
