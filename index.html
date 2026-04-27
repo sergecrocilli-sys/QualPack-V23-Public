@@ -5198,19 +5198,20 @@ const preview = normalized.map(r => {
   const qn = parseNumber(r.QN_G ?? r.QN ?? '');
 
   return {
-    client: String(r.CLIENT_FINAL || r.CLIENT || '').trim(),
-    nom: String(r.PRODUIT || '').trim(),
-    qn: qn,
-    tare_fixe_g: parseNumber(r.TARE_FIXE_G ?? r.TARE_FIXE ?? r.TARE ?? ''),
-    ligne_prod: String(r.LIGNE_PROD_HABITUELLE || r.LIGNE_PROD || r.LIGNE || '').trim(),
-    detecteur: String(r.DETECTEUR_HABITUEL || r.DETECTEUR || r.EQUIPEMENT || '').trim(),
-    quantite_prevue_defaut: parseIntOrNull(
-      r.QUANTITE_PREVUE_PAR_DEFAUT ??
-      r.QUANTITE_PREVUE ??
-      r.QTE_PREVUE ??
-      ''
-    ),
-    actif
+  client: String(r.CLIENT_FINAL || r.CLIENT || r.ID_CLIENT || '').trim(),
+  nom: String(r.PRODUIT || r.NOM_PRODUIT || '').trim(),
+  qn: qn,
+  tare_fixe_g: parseNumber(r.TARE_FIXE_G ?? r.TARE_FIXE ?? r.TARE ?? ''),
+  ligne_prod: String(r.LIGNE_PROD_HABITUELLE || r.LIGNE_PROD || r.LIGNE || '').trim(),
+  detecteur: String(r.DETECTEUR_HABITUEL || r.DETECTEUR || r.EQUIPEMENT || '').trim(),
+  quantite_prevue_defaut: parseIntOrNull(
+    r.QUANTITE_PREVUE_PAR_DEFAUT ??
+    r.QUANTITE_PREVUE ??
+    r.QTE_PREVUE ??
+    ''
+  ),
+  actif
+};
   };
 }).filter(r => r.actif && r.client && r.nom && r.qn > 0);
 
