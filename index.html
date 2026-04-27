@@ -5155,17 +5155,37 @@ async function importProduitsExcel(input) {
       });
     };
 
-   let normalized = readSheet('IMPORT_APP', 4);
+   let normalized = [];
 
-if (!normalized.length) {
-  normalized = readSheet('IMPORT_APP');
+for (let startRow = 0; startRow <= 10; startRow++) {
+  const testRows = readSheet('IMPORT_APP', startRow);
+  const first = testRows[0] || {};
+
+  const hasClient =
+    'CLIENT_FINAL' in first ||
+    'CLIENT' in first ||
+    'ID_CLIENT' in first;
+
+  const hasProduit =
+    'PRODUIT' in first ||
+    'NOM_PRODUIT' in first;
+
+  const hasQN =
+    'QN_G' in first ||
+    'QN' in first ||
+    'POIDS_NET_G' in first;
+
+  if (hasClient && hasProduit && hasQN) {
+    normalized = testRows;
+    console.log('IMPORT_APP détecté à partir de la ligne Excel :', startRow + 1);
+    break;
+  }
 }
 
 if (!normalized.length) {
-  toast('Feuille IMPORT_APP introuvable ou vide', 'err');
+  toast('Colonnes requises : CLIENT_FINAL/CLIENT, PRODUIT, QN_G', 'err');
   return;
 }
-
     const first = normalized[0] || {};
     const hasClient =
   'CLIENT_FINAL' in first ||
