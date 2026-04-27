@@ -5475,58 +5475,42 @@ async function confirmImportProduits() {
   }
 }
 
-/* ── Télécharger le template Excel depuis le catalogue ── */
+/* ── Télécharger le template Excel catalogue V24.1 ── */
 async function downloadTemplate() {
   await window._libsReady;
   const XLSXLib = getXLSXLib();
   if (!XLSXLib) { toast('XLSX indisponible', 'err'); return; }
 
-  const now = new Date();
-  const pad = (n) => String(n).padStart(2, '0');
-  const nowStr =
-    `${now.getFullYear()}-${pad(now.getMonth() + 1)}-${pad(now.getDate())} ` +
-    `${pad(now.getHours())}:${pad(now.getMinutes())}`;
-
   const data = [
-    ['DATE_HEURE', 'CLIENT', 'PRODUIT', 'QN_G', 'LIGNE_PROD', 'DETECTEUR', 'OF_PLANIFIES']
+    [
+      'CLIENT_FINAL',
+      'PRODUIT',
+      'QN_G',
+      'TARE_FIXE_G',
+      'LIGNE_PROD_HABITUELLE',
+      'DETECTEUR_HABITUEL',
+      'QUANTITE_PREVUE_PAR_DEFAUT',
+      'ACTIF'
+    ]
   ];
-
-  const clients = Object.keys(CATALOGUE || {}).sort((a, b) =>
-    String(a).localeCompare(String(b), 'fr', { sensitivity: 'base' })
-  );
-
-  clients.forEach(client => {
-    const produits = Array.isArray(CATALOGUE[client]) ? CATALOGUE[client] : [];
-    produits.forEach(p => {
-      data.push([
-        nowStr,
-        client || '',
-        p?.nom || '',
-        p?.qn ?? '',
-        p?.ligne_prod || '',
-        p?.detecteur || '',
-        p?.of_planifies || ''
-      ]);
-    });
-  });
-
-  if (data.length === 1) {
-    data.push([nowStr, '', '', '', '', '', '']);
-  }
 
   const wb = XLSXLib.utils.book_new();
-
   const ws = XLSXLib.utils.aoa_to_sheet(data);
+
   ws['!cols'] = [
-    { wch: 18 },
-    { wch: 18 },
-    { wch: 22 },
-    { wch: 10 },
-    { wch: 18 },
     { wch: 24 },
-    { wch: 24 }
+    { wch: 28 },
+    { wch: 10 },
+    { wch: 14 },
+    { wch: 24 },
+    { wch: 24 },
+    { wch: 28 },
+    { wch: 10 }
   ];
+
   XLSXLib.utils.book_append_sheet(wb, ws, 'IMPORT_APP');
+  XLSXLib.writeFile(wb, 'QualPack_Template_Catalogue_V24_1.xlsx');
+}
 
   const inst = XLSXLib.utils.aoa_to_sheet([
     ['INSTRUCTIONS'],
