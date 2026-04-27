@@ -5537,59 +5537,6 @@ async function downloadTemplate() {
   XLSXLib.writeFile(wb, 'QualPack_Template_Catalogue_V24_1.xlsx');
 }
 
-  const inst = XLSXLib.utils.aoa_to_sheet([
-    ['INSTRUCTIONS'],
-    [''],
-    ['Colonne DATE_HEURE  : Date et heure de génération du template'],
-    ['Colonne CLIENT      : Nom du client (obligatoire)'],
-    ['Colonne PRODUIT     : Nom du produit (obligatoire)'],
-    ['Colonne QN_G        : Poids nominal en grammes (obligatoire)'],
-    ['Colonne LIGNE_PROD  : Ligne de production (optionnel)'],
-    ['Colonne DETECTEUR   : Détecteur associé à la ligne (recommandé)'],
-    ['Colonne OF_PLANIFIES: N° OF séparés par des virgules (optionnel)'],
-    [''],
-    ['Le contenu de la feuille IMPORT_APP est généré à partir du catalogue actuel de QualPack.'],
-    ['TU1, TU2 et TNE sont calculés automatiquement selon la réglementation préemballés française.']
-  ]);
-  inst['!cols'] = [{ wch: 70 }];
-  XLSXLib.utils.book_append_sheet(wb, inst, 'Instructions');
-
-  const lignesCatalogue = getStoredLineCatalogue();
-  const lignesData = [['LIGNE_PROD'], ...lignesCatalogue.map(l => [l])];
-  const wsLignes = XLSXLib.utils.aoa_to_sheet(
-    lignesData.length ? lignesData : [['LIGNE_PROD']]
-  );
-  wsLignes['!cols'] = [{ wch: 18 }];
-  XLSXLib.utils.book_append_sheet(wb, wsLignes, 'LIGNES');
-
-  const detecteursCatalogue = getStoredDetecteurCatalogue();
-  const lineDetecteurMap = getLineDetecteurMap();
-
-  const detRows = [['DETECTEUR', 'LIGNE_PROD']];
-  const used = new Set();
-
-  Object.entries(lineDetecteurMap || {}).forEach(([ligne, detecteur]) => {
-    const det = String(detecteur || '').trim();
-    const lig = String(ligne || '').trim();
-    if (!det && !lig) return;
-    detRows.push([det, lig]);
-    used.add(`${det}__${lig}`);
-  });
-
-  detecteursCatalogue.forEach(det => {
-    const detName = String(det || '').trim();
-    if (!detName) return;
-    const existing = Array.from(used).some(key => key.startsWith(`${detName}__`));
-    if (!existing) detRows.push([detName, '']);
-  });
-
-  const wsDet = XLSXLib.utils.aoa_to_sheet(detRows);
-  wsDet['!cols'] = [{ wch: 24 }, { wch: 18 }];
-  XLSXLib.utils.book_append_sheet(wb, wsDet, 'DETECTEURS');
-
-  XLSXLib.writeFile(wb, 'qualpack_template_produits.xlsx');
-}
-
 /* ── Afficher catalogue dans l'admin ── */
 function renderAdminCatalogue() {
   const div = document.getElementById('admin-catalogue-list');
