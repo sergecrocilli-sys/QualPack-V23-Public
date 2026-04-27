@@ -4417,9 +4417,10 @@ async function genDashboardPDF() {
       drawSimpleTableTitle(y, title);
       y += 5;
 
-      const isPeseesTable = title.toLowerCase().includes('pesée') || title.toLowerCase().includes('pesées');
+      const titleNorm = String(title || '').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+      const isPeseesTable = titleNorm.includes('pesee') || titleNorm.includes('pesees');
 
-const cols = isPeseesTable
+      const cols = isPeseesTable
   ? [
       { key: 'date', x: 14, w: 28, label: 'Date' },
       { key: 'label', x: 42, w: 50, label: 'Produit' },
